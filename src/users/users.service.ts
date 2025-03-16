@@ -12,7 +12,7 @@ import * as argon from 'argon2';
 export class UsersService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async create(dto: CreateUserDto) {
     const hashedPassword = await argon.hash(dto.password);
@@ -78,5 +78,30 @@ export class UsersService {
       return new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     return result;
+  }
+
+  async resetPassword(dniNumber: string) {
+    const dniNumberAsNumber = Number(dniNumber);
+
+    if (isNaN(dniNumberAsNumber)) {
+      throw new HttpException('DNI inválido', HttpStatus.BAD_REQUEST);
+    }
+
+    const userFound = await this.userRepository.findOne({
+      where: {
+        dniNumber: dniNumberAsNumber,
+      },
+    });
+    if (!userFound) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    const newPassword = dniNumberAsNumber.toString();
+    const hashedPassword = await argon.hash(newPassword);
+
+    userFound.password = hashedPassword;
+    await this.userRepository.save(userFound);
+
+    return { message: 'Password reset successfully', newPassword };
   }
 }

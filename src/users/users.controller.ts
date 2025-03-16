@@ -20,7 +20,7 @@ import { JwtGuard } from 'src/auth/guard/jwt.guard';
 @ApiTags('users')
 @UseGuards(JwtGuard)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Post()
   @ApiCreatedResponse({ type: User })
@@ -50,5 +50,10 @@ export class UsersController {
   @ApiOkResponse({ type: User })
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+
+  @Post('reset-password')
+  async resetPassword(@Body('dniNumber') dniNumber: string) {
+    return this.usersService.resetPassword(dniNumber);
   }
 }
