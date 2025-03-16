@@ -116,9 +116,6 @@ export class Pet {
   @ManyToOne(() => Adopter, (adopter) => adopter.adoptedPets, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({
-    name: 'adopterDniNumber',
-    referencedColumnName: 'adopterDniNumber',
-  })
+  
   adopter: Adopter;
 }

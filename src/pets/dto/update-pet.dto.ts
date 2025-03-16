@@ -13,6 +13,7 @@ import {
   PetSizeOptions,
   PetSpecialConditionOptions,
 } from '../entities/pet.entity';
+import { Transform } from 'class-transformer';
 
 export class UpdatePetDto {
   @ApiProperty()
@@ -51,11 +52,13 @@ export class UpdatePetDto {
   petSpecialCondition?: PetSpecialConditionOptions;
 
   @ApiProperty()
+  @Transform(({ value }) => value === 'true' || value === true)
   @IsBoolean()
   @IsOptional()
   isAdopted?: boolean;
 
   @ApiProperty()
+  @Transform(({ value }) => value === 'true' || value === true)
   @IsBoolean()
   @IsOptional()
   isFeatured?: boolean;
@@ -71,7 +74,8 @@ export class UpdatePetDto {
   description?: string;
 
   @ApiProperty()
+  @Transform(({ value }) => (value === "" ? null : Number(value)))
   @IsNumber()
   @IsOptional()
-  adopterDniNumber?: number;
+  adopterDniNumber?: number | null;
 }
